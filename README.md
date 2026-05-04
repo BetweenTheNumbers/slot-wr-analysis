@@ -1,17 +1,17 @@
-# Slot WR Optimization in Shanahan-Kubiak Offenses
+# Slot WR Optimization in Shanahan Offenses
 ### Projecting Makai Lemon's Rookie Usage & Production for the Philadelphia Eagles (2026)
 
 ---
 
 ## Research Question
 
-> How does the Shanahan-Kubiak offensive scheme change slot WR usage and efficiency, and what does this mean for how the Eagles should deploy Makai Lemon in 2026?
+> How does the Kyle Shanahan offensive coaching tree (inspired by Gary Kubiak, and, previously, by Mike Shanahan) scheme change slot WR usage and efficiency, and what does this mean for how the Eagles should deploy Makai Lemon in 2026?
 
 ## Key Findings
 
-**1. Motion is a slot-WR-specific weapon.** Pre-snap motion boosts slot WR EPA by +0.069/play in Shanahan-Kubiak offenses but slightly *hurts* outside WR EPA (-0.039). The +0.108 differential means Mannion's expected increase in motion rate directly and disproportionately benefits the slot receiver role.
+**1. Motion is a slot-WR-specific weapon.** Pre-snap motion boosts slot WR EPA by +0.069/play in Shanahan offenses but slightly *hurts* outside WR EPA (-0.039). The +0.108 differential means Mannion's expected increase in motion rate directly and disproportionately benefits the slot receiver role.
 
-**2. Middle of field is highest value.** Slot WR targets over the middle produce +0.419 EPA in Shanahan-Kubiak offenses — nearly double sideline targets. Mannion's expected emphasis on crossers and dig routes aligns with slot WR efficiency.
+**2. Middle of field is highest value.** Slot WR targets over the middle produce +0.419 EPA in Shanahan offenses — nearly double sideline targets. Mannion's expected emphasis on crossers and dig routes aligns with slot WR efficiency.
 
 **3. 12 personnel boosts slot WR efficiency.** When the offense goes to 12 personnel (2 TE sets), slot WR EPA rises from +0.278 to +0.355. With Goedert + Stowers, the Eagles can run heavy formations while Lemon operates as the primary short-to-intermediate target.
 
@@ -31,19 +31,19 @@
 ### Data Pipeline (`01_data_pipeline.py`)
 - **nflverse**: 484K plays (2016–2025), participation data, FTN charting (motion, play action, screen, coverage — 2022+), player stats, draft picks, combine
 - **MockDraftable**: Extended measurables (hand size, arm length, wingspan) scraped for 155 WRs drafted Rd 1-3, 2016–2026
-- **Shanahan-Kubiak tree tagging**: SF, LAR, GB, MIN, DET, MIA, IND classified by coaching lineage and season
+- **Shanahan tree tagging**: SF, LAR, GB, MIN, DET, MIA, IND classified by coaching lineage and season
 
 ### Analysis (`02_analysis.py`)
 
-**Part 1 — Scheme EDA**: Quantify how Shanahan-Kubiak offenses differ from the rest of the NFL in motion rate (+13.6%), under-center usage (+7.8%), and personnel tendencies.
+**Part 1 — Scheme EDA**: Quantify how Shanahan offenses differ from the rest of the NFL in motion rate (+13.6%), under-center usage (+7.8%), and personnel tendencies.
 
 **Part 2 — PyTorch EPA Model**: Two-headed neural network predicting both mean and variance of EPA per play (Gaussian NLL loss). 20 features including scheme, personnel, motion, play action, formation, and game context. The heteroscedastic architecture captures which play contexts have tighter vs. wider outcome distributions.
 
 **Part 3 — Player Quality Model**: Draft profile + combine measurables → Year 1 yards/game via Ridge regression (CV-optimal α). Model selection documented: OLS, Ridge, Lasso, ElasticNet, and PCA compared via 10-fold CV. Lasso path analysis confirms draft round and hand size as the most robust predictors.
 
-**Part 4 — Optimal Usage Analysis**: Play-level EPA broken down by play design, motion, personnel grouping, alpha WR1 presence, target depth, and pass location — all specific to slot WRs in Shanahan-Kubiak offenses.
+**Part 4 — Optimal Usage Analysis**: Play-level EPA broken down by play design, motion, personnel grouping, alpha WR1 presence, target depth, and pass location — all specific to slot WRs in Shanahan offenses.
 
-**Part 5 — Monte Carlo Simulation**: 2,000 season simulations per scenario (with/without Brown). Each simulation samples play contexts from historical Shanahan-Kubiak slot WR targets with scenario-specific adjustments, then converts EPA to counting stats using Lemon-calibrated rates.
+**Part 5 — Monte Carlo Simulation**: 2,000 season simulations per scenario (with/without Brown). Each simulation samples play contexts from historical Shanahan slot WR targets with scenario-specific adjustments, then converts EPA to counting stats using Lemon-calibrated rates.
 
 ## Tech Stack
 
@@ -71,7 +71,7 @@
 
 ## Limitations
 
-1. **Mannion has never called plays as OC.** Analysis assumes he implements Shanahan-Kubiak principles consistent with his coaching background.
+1. **Mannion has never called plays as OC.** Analysis assumes he implements Shanahan principles consistent with his coaching background.
 2. **No tracking data.** Route-specific separation and defender assignments not available in public data.
 3. **Slot WR identification is approximate** (ADOT < 10 as proxy).
 4. **Small sample for quality model** (79 WRs, appropriate for Ridge but not complex models).
