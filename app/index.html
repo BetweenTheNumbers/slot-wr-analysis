@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Makai Lemon — Rookie Projection Model</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --eagles-green: #004C54;
+  --eagles-green-light: #00676F;
+  --eagles-silver: #A5ACAF;
+  --eagles-black: #000000;
+  --eagles-white: #F5F5F0;
+  --highlight: #e74c3c;
+  --highlight-light: #f39c8b;
+  --shanahan: #2ecc71;
+  --bg: #0a0e0f;
+  --surface: #111819;
+  --surface-2: #1a2223;
+  --text: #f0eeea;
+  --text-muted: #b0b5b8;
+  --border: #2a3435;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  font-size: 16px;
+}
+
+/* ── Hero ── */
+.hero {
+  position: relative;
+  padding: 80px 40px 60px;
+  text-align: center;
+  background: linear-gradient(170deg, var(--eagles-green) 0%, var(--bg) 70%);
+  border-bottom: 3px solid var(--eagles-green);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    90deg, transparent, transparent 60px, rgba(255,255,255,0.02) 60px, rgba(255,255,255,0.02) 61px
+  );
+  pointer-events: none;
+}
+
+.hero h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--eagles-white);
+  position: relative;
+}
+
+.hero h1 span { color: var(--shanahan); }
+
+.hero .subtitle {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-top: 12px;
+  font-style: italic;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero .meta {
+  margin-top: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--eagles-silver);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── Layout ── */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+section {
+  padding: 60px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+section:last-child { border-bottom: none; }
+
+h2 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--eagles-white);
+  margin-bottom: 8px;
+}
+
+h2::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 3px;
+  background: var(--eagles-green);
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--eagles-silver);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+p { margin-bottom: 16px; color: var(--text-muted); max-width: 75ch; font-size: 1.05rem; }
+p strong { color: var(--text); }
+
+/* ── Profile Card ── */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 24px 0;
+}
+
+@media (max-width: 700px) { .profile-grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.card.accent { border-left: 4px solid var(--eagles-green); }
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.stat-row:last-child { border-bottom: none; }
+
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.stat-value {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--eagles-white);
+}
+
+.stat-value.green { color: var(--shanahan); }
+.stat-value.red { color: var(--highlight); }
+
+/* ── Toggle ── */
+.toggle-container {
+  display: flex;
+  gap: 0;
+  margin: 24px 0;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  max-width: 500px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 14px 20px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--surface);
+  color: var(--text-muted);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-btn.active-green {
+  background: var(--eagles-green);
+  color: white;
+}
+
+.toggle-btn.active-red {
+  background: var(--highlight);
+  color: white;
+}
+
+.toggle-btn:hover:not(.active-green):not(.active-red) {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* ── Charts ── */
+.chart-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 20px 0;
+}
+
+.chart-container canvas { max-height: 350px; }
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 700px) { .chart-grid { grid-template-columns: 1fr; } }
+
+/* ── Findings ── */
+.finding {
+  background: var(--surface);
+  border-left: 4px solid var(--eagles-green);
+  padding: 20px 24px;
+  margin: 16px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.finding.highlight { border-left-color: var(--highlight); }
+
+.finding-number {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.8rem;
+  color: var(--eagles-green);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.finding h4 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--eagles-white);
+  margin-bottom: 8px;
+}
+
+.finding p { font-size: 1rem; margin-bottom: 0; color: var(--text-muted); }
+
+/* ── Comps Table ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.95rem;
+}
+
+th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--border);
+}
+
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+tr:hover td { background: var(--surface-2); }
+
+/* ── Footer ── */
+footer {
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  border-top: 1px solid var(--border);
+}
+
+footer a { color: var(--eagles-green-light); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ── Methodology Badge ── */
+.method-badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  margin: 2px 4px 2px 0;
+  letter-spacing: 0.04em;
+}
+
+.loading {
+  text-align: center;
+  padding: 60px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Makai <span>Lemon</span></h1>
+  <div class="subtitle">
+    Slot WR Optimization & Rookie Projection Model<br>
+    Philadelphia Eagles — 2026 Season
+  </div>
+  <div class="meta">
+    PyTorch EPA Model · Ridge Quality Calibration · Monte Carlo Simulation · nflverse 2016–2025
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- PROFILE -->
+  <section id="profile">
+    <h2>Player Profile</h2>
+    <div class="profile-grid">
+      <div class="card accent">
+        <h3>Draft & Measurables</h3>
+        <div id="profile-measurables"></div>
+      </div>
+      <div class="card accent">
+        <h3>Quality Assessment</h3>
+        <div id="profile-quality"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KEY FINDINGS -->
+  <section id="findings">
+    <h2>Key Findings</h2>
+    <p>How Shanahan-tree offensive schemes change slot WR usage — and what it means for Lemon in Philadelphia.</p>
+    <div id="findings-container"></div>
+  </section>
+
+  <!-- PROJECTIONS -->
+  <section id="projections">
+    <h2>Rookie Projections</h2>
+    <p>Season simulations calibrated to Lemon's draft profile and the Eagles' expected offensive scheme under Sean Mannion.</p>
+
+    <div class="toggle-container">
+      <button class="toggle-btn active-green" onclick="setScenario('with')" id="btn-with">With A.J. Brown</button>
+      <button class="toggle-btn" onclick="setScenario('without')" id="btn-without">Without A.J. Brown</button>
+    </div>
+
+    <div class="profile-grid" id="projection-stats"></div>
+
+    <div class="chart-grid">
+      <div class="chart-container">
+        <canvas id="chart-yards"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="chart-thresholds"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPS -->
+  <section id="comps">
+    <h2>Historical Comparisons</h2>
+    <p>Closest draft profile matches based on draft pick, height, weight, 40 time, hand size, and arm length.</p>
+    <div id="comps-table"></div>
+  </section>
+
+  <!-- METHODOLOGY -->
+  <section id="methodology">
+    <h2>Methodology</h2>
+    <div class="profile-grid">
+      <div class="card">
+        <h3>Data Pipeline</h3>
+        <p>
+          <span class="method-badge">nflverse PBP</span>
+          <span class="method-badge">FTN Charting</span>
+          <span class="method-badge">MockDraftable</span>
+        </p>
+        <p>484K plays across 2016–2025, merged with participation data (personnel groupings, formation) and FTN charting data (motion, play action, screen, coverage type). Extended measurables (hand size, arm length, wingspan) scraped from MockDraftable for 155 WRs drafted rounds 1–3.</p>
+      </div>
+      <div class="card">
+        <h3>EPA Prediction Model</h3>
+        <p>
+          <span class="method-badge">PyTorch</span>
+          <span class="method-badge">Gaussian NLL</span>
+          <span class="method-badge">192K plays</span>
+        </p>
+        <p>Two-headed neural network predicting both the mean and variance of EPA per play from 20 scheme/context features. Trained with Gaussian negative log-likelihood loss so the model learns uncertainty, not just point estimates.</p>
+      </div>
+      <div class="card">
+        <h3>Quality Calibration</h3>
+        <p>
+          <span class="method-badge">Ridge Regression</span>
+          <span class="method-badge">CV-Optimal α</span>
+          <span class="method-badge">79 WR Profiles</span>
+        </p>
+        <p>Draft capital + combine measurables (including hand size and arm length) mapped to Year 1 production via Ridge regression. Model selected over OLS, Lasso, ElasticNet, and PCA through 10-fold cross-validation.</p>
+      </div>
+      <div class="card">
+        <h3>Projection Engine</h3>
+        <p>
+          <span class="method-badge">Monte Carlo</span>
+          <span class="method-badge">2,000 Seasons</span>
+          <span class="method-badge">Uncertainty Propagation</span>
+        </p>
+        <p>Each simulation samples play contexts from historical Shanahan-tree slot WR targets, applies scenario-specific adjustments (personnel, motion, screen rate), and converts EPA predictions to counting stats using Lemon-calibrated rates.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p>
+    <a href="#" id="github-link">GitHub Repository</a><br>
+    Data: nflverse (CC-BY 4.0) · FTN Charting (CC-BY-SA 4.0) · MockDraftable<br>
+    Built with Python, PyTorch, scikit-learn, Chart.js
+  </p>
+</footer>
+
+<script>
+// ── Data (loaded from JSON or embedded) ──
+let DATA = null;
+let currentScenario = 'with';
+let yardsChart = null;
+let thresholdChart = null;
+
+const COLORS = {
+  green: '#004C54',
+  greenLight: '#00676F',
+  greenAlpha: 'rgba(0, 76, 84, 0.5)',
+  red: '#e74c3c',
+  redAlpha: 'rgba(231, 76, 60, 0.5)',
+  silver: '#A5ACAF',
+  text: '#e8e6e1',
+  muted: '#8a9194',
+  surface: '#111819',
+  grid: '#2a3435',
+};
+
+Chart.defaults.color = COLORS.muted;
+Chart.defaults.borderColor = COLORS.grid;
+Chart.defaults.font.family = "'Source Serif 4', Georgia, serif";
+
+async function init() {
+  try {
+    const resp = await fetch('lemon_projections.json');
+    DATA = await resp.json();
+  } catch (e) {
+    // Fallback: try outputs/ path
+    try {
+      const resp = await fetch('outputs/lemon_projections.json');
+      DATA = await resp.json();
+    } catch (e2) {
+      document.querySelector('.container').innerHTML =
+        '<div class="loading">Could not load projection data. Make sure lemon_projections.json is in the same directory.</div>';
+      return;
+    }
+  }
+  renderProfile();
+  renderFindings();
+  renderProjections();
+  renderComps();
+}
+
+function renderProfile() {
+  const p = DATA.lemon_profile;
+  if (!p) return;
+
+  const meas = p.measurables || {};
+  document.getElementById('profile-measurables').innerHTML = `
+    <div class="stat-row"><span class="stat-label">Draft</span><span class="stat-value">Rd ${p.draft?.round || 1}, Pick ${p.draft?.pick || 20}</span></div>
+    <div class="stat-row"><span class="stat-label">Height</span><span class="stat-value">${meas.height_inches ? (Math.floor(meas.height_inches/12) + "'" + Math.round(meas.height_inches%12) + '"') : "5'11⅛\""}</span></div>
+    <div class="stat-row"><span class="stat-label">Weight</span><span class="stat-value">${meas.weight || 192} lbs</span></div>
+    <div class="stat-row"><span class="stat-label">40-Yard Dash</span><span class="stat-value">${meas.forty || 4.53}s</span></div>
+    <div class="stat-row"><span class="stat-label">Hand Size</span><span class="stat-value">${meas.hand_size || 8.75}"</span></div>
+    <div class="stat-row"><span class="stat-label">Arm Length</span><span class="stat-value">${meas.arm_length || 30.5}"</span></div>
+  `;
+
+  const mult = p.quality_multiplier || p.bayesian_quality?.multiplier_mean || 1.25;
+  const pAbove = p.bayesian_quality?.p_above_average;
+  document.getElementById('profile-quality').innerHTML = `
+    <div class="stat-row"><span class="stat-label">Quality Multiplier</span><span class="stat-value green">${mult.toFixed(2)}x</span></div>
+    ${pAbove ? `<div class="stat-row"><span class="stat-label">P(Above Average)</span><span class="stat-value green">${(pAbove * 100).toFixed(0)}%</span></div>` : ''}
+    <div class="stat-row"><span class="stat-label">Model</span><span class="stat-value" style="font-size:0.9rem">Ridge (CV-optimal)</span></div>
+    <div class="stat-row"><span class="stat-label">Training Set</span><span class="stat-value" style="font-size:0.9rem">${DATA.metadata?.n_wr_profiles || 79} WRs (Rd 1-3)</span></div>
+    <div class="stat-row"><span class="stat-label">Simulations</span><span class="stat-value" style="font-size:0.9rem">${(DATA.metadata?.n_simulations || 2000).toLocaleString()}/scenario</span></div>
+  `;
+}
+
+function renderFindings() {
+  const f = DATA.findings || {};
+  const findings = [
+    { num: '01', title: 'Motion is a Slot WR Weapon',
+      text: `Pre-snap motion boosts slot WR EPA by <strong>${f.motion_lift_slot_shanahan ? '+' + f.motion_lift_slot_shanahan.toFixed(3) : '+0.069'}</strong> in Shanahan-tree offenses but slightly hurts outside WR EPA. Mannion's expected increase in motion rate directly and disproportionately benefits the slot receiver role.`,
+      highlight: false },
+    { num: '02', title: 'Middle of Field is Highest Value',
+      text: `Slot WR targets in the middle of the field produce <strong>${f.middle_of_field_epa ? '+' + f.middle_of_field_epa.toFixed(3) : '+0.419'} EPA</strong> in Shanahan-tree offenses — nearly double the value of sideline targets. Mannion's expected emphasis on crossers and dig routes aligns with slot WR efficiency.`,
+      highlight: false },
+    { num: '03', title: '12 Personnel Boosts Slot WR Efficiency',
+      text: `When the Eagles go to 12 personnel (Goedert + Stowers), the slot WR produces <strong>${f.twelve_personnel_epa ? '+' + f.twelve_personnel_epa.toFixed(3) : '+0.355'} EPA</strong> per target — significantly above the +0.278 in standard 11 personnel. Fewer WRs on the field means better looks for the one who's out there.`,
+      highlight: false },
+    { num: '04', title: 'The A.J. Brown Question',
+      text: `Slot WRs are actually <strong>more efficient without an alpha WR1</strong> on the roster (+0.365 vs +0.289 EPA). But the mechanism matters: with Brown, Lemon gets more manufactured touches (screens). Without Brown, he runs more intermediate routes — higher ceiling, higher variance.`,
+      highlight: true },
+  ];
+
+  const container = document.getElementById('findings-container');
+  container.innerHTML = findings.map(f => `
+    <div class="finding ${f.highlight ? 'highlight' : ''}">
+      <div class="finding-number">Finding ${f.num}</div>
+      <h4>${f.title}</h4>
+      <p>${f.text}</p>
+    </div>
+  `).join('');
+}
+
+function setScenario(s) {
+  currentScenario = s;
+  document.getElementById('btn-with').className = 'toggle-btn' + (s === 'with' ? ' active-green' : '');
+  document.getElementById('btn-without').className = 'toggle-btn' + (s === 'without' ? ' active-red' : '');
+  renderProjections();
+}
+
+function renderProjections() {
+  const key = currentScenario === 'with' ? 'With A.J. Brown' : 'Without A.J. Brown';
+  const sc = DATA[key];
+  if (!sc) return;
+
+  const sum = sc.summary;
+  const stats = [
+    { label: 'Targets', key: 'targets' },
+    { label: 'Receptions', key: 'receptions' },
+    { label: 'Receiving Yards', key: 'yards' },
+    { label: 'Touchdowns', key: 'tds' },
+  ];
+
+  document.getElementById('projection-stats').innerHTML = stats.map(s => {
+    const d = sum[s.key];
+    if (!d) return '';
+    return `<div class="card accent">
+      <div class="stat-row">
+        <span class="stat-label">${s.label}</span>
+        <span class="stat-value">${Math.round(d.median)}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">10th–90th %ile</span>
+        <span class="stat-value" style="font-size:1rem; color: var(--text-muted)">${Math.round(d.p10)} – ${Math.round(d.p90)}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  renderYardsChart(sc);
+  renderThresholdChart();
+}
+
+function renderYardsChart(sc) {
+  const ctx = document.getElementById('chart-yards').getContext('2d');
+  if (yardsChart) yardsChart.destroy();
+
+  const dist = sc.distributions?.yards || [];
+  if (dist.length === 0) return;
+
+  // Build histogram
+  const min = Math.min(...dist);
+  const max = Math.max(...dist);
+  const nBins = 30;
+  const binWidth = (max - min) / nBins;
+  const bins = Array(nBins).fill(0);
+  dist.forEach(v => { const i = Math.min(Math.floor((v - min) / binWidth), nBins - 1); bins[i]++; });
+  const labels = bins.map((_, i) => Math.round(min + (i + 0.5) * binWidth));
+  const maxCount = Math.max(...bins);
+  const normalized = bins.map(b => b / dist.length);
+
+  const color = currentScenario === 'with' ? COLORS.green : COLORS.red;
+  const colorAlpha = currentScenario === 'with' ? COLORS.greenAlpha : COLORS.redAlpha;
+
+  yardsChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{ data: normalized, backgroundColor: colorAlpha, borderColor: color, borderWidth: 1 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: 'Projected Receiving Yards Distribution', color: COLORS.text,
+                 font: { family: "'Oswald', sans-serif", size: 14, weight: 600 } }
+      },
+      scales: {
+        x: { title: { display: true, text: 'Yards' }, ticks: { maxTicksLimit: 8 } },
+        y: { title: { display: true, text: 'Probability' }, ticks: { callback: v => (v * 100).toFixed(0) + '%' } }
+      }
+    }
+  });
+}
+
+function renderThresholdChart() {
+  const ctx = document.getElementById('chart-thresholds').getContext('2d');
+  if (thresholdChart) thresholdChart.destroy();
+
+  const thresholds = ['400', '500', '600', '700', '800', '900', '1000', '1100'];
+
+  const datasets = [
+    { key: 'With A.J. Brown', color: COLORS.green, label: 'With Brown' },
+    { key: 'Without A.J. Brown', color: COLORS.red, label: 'Without Brown' },
+  ].map(s => {
+    const sc = DATA[s.key];
+    if (!sc?.yard_thresholds) return null;
+    return {
+      label: s.label,
+      data: thresholds.map(t => sc.yard_thresholds[t] || 0),
+      borderColor: s.color,
+      backgroundColor: 'transparent',
+      borderWidth: 2.5,
+      pointRadius: 5,
+      pointBackgroundColor: s.color,
+      tension: 0.3,
+    };
+  }).filter(Boolean);
+
+  thresholdChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: thresholds.map(t => t + ' yds'), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: {
+        title: { display: true, text: 'Probability of Reaching Yardage Milestones', color: COLORS.text,
+                 font: { family: "'Oswald', sans-serif", size: 14, weight: 600 } },
+        legend: { labels: { color: COLORS.text } }
+      },
+      scales: {
+        y: { min: 0, max: 1, ticks: { callback: v => (v * 100).toFixed(0) + '%' } }
+      }
+    }
+  });
+}
+
+function renderComps() {
+  const comps = DATA.lemon_profile?.comps;
+  if (!comps || comps.length === 0) return;
+
+  document.getElementById('comps-table').innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Yr 1 Yards</th>
+          <th>Career Yards (Yrs 1-4)</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${comps.map(c => `
+          <tr>
+            <td><strong>${c.name}</strong></td>
+            <td>${Math.round(c.yr1_yards).toLocaleString()}</td>
+            <td>${Math.round(c.career_yards).toLocaleString()}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+// Initialize
+init();
+</script>
+</body>
+</html>
